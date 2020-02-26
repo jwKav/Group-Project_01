@@ -23,5 +23,15 @@ namespace GroupProjectTests
 
             Assert.AreEqual(expected, actual);
         }
+
+        [Test]
+        public void Test2Fax(int Fax)
+        {
+            var instance = new CustomerTesting2();
+
+            var actual = instance.HasCustomerGotFax(Fax);
+
+            Assert.AreEqual(69, actual);
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace GroupProject01
     {
        
         static void Main(string[] args)
-        {            
+        {
             
         }     
 
@@ -48,7 +48,27 @@ namespace GroupProject01
             }
         }
     }
+
+    public class CustomerTesting2
+    {
+        public int HasCustomerGotFax(int Fax)
+        {
+            int inputFax = Fax;
+            string faxRequest = "select count(*) from customers where fax is not null;";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(faxRequest, connection))
+                {
+
+                    Int32 result = (Int32)command.ExecuteScalar();
+
+                    return result;
+
+                }
+            }
+        }    
+    }
 }
-
-
-
