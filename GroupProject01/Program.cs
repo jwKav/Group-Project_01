@@ -11,28 +11,46 @@ namespace GroupProject01
         static void Main(string[] args)
         {
 
-        }     
-    }
-    public class CustomerTesting
-    {
-        public int TotalOrders { get; private set; }
-
-            //Console.WriteLine(ProductTesting.WithStockGreaterThan(0));
         }
+
     }
-    public class ProductTesting
+    public class CodeToTest
     {
+        static List<Order> OrderList = new List<Order>();
         static List<Product> products = new List<Product>();
+
         public decimal UnitPriceDesc(string order)
         {
+            products.Clear();
+
             using (var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
             {
                 connection.Open();
                 Console.WriteLine(connection.State);
                 var sqlQuery = "select ProductName, UnitPrice from products" +
                     " order by UnitPrice " + order;
+                using (var command = new SqlCommand(sqlQuery, connection))
+                {
+                    var sqlReader = command.ExecuteReader();
+
+                    while (sqlReader.Read())
+                    {
+                        string ProductName = sqlReader["ProductName"].ToString();
+                        decimal UnitPrice = (decimal)sqlReader["UnitPrice"];
 
 
+                        var product = new Product()
+                        {
+                            ProductName = ProductName,
+                            UnitPrice = UnitPrice
+                        };
+                        products.Add(product);
+                    }
+                }
+            }
+
+            return products[0].UnitPrice;
+        }
         public int ContactTitleInCountry(string Country, string ContactTitle)
         {
             string inputCountry = Country;
@@ -64,7 +82,6 @@ namespace GroupProject01
                 }
             }
         }
-
         public string TopOrdersFromCustomers()
         {
             string Request = "select c.CustomerID as CustomerIDS, c.ContactName as CustomerNames, count(o.CustomerID) as TotalOrders" +
@@ -129,28 +146,12 @@ namespace GroupProject01
                     param1.Value = "%" + inputCity + "%";
                     command.Parameters.Add(param1);
 
+                    Int32 count = (Int32)command.ExecuteScalar();
+                    Console.WriteLine(count);
 
-                using (var command = new SqlCommand(sqlQuery, connection))
-                {
-                    var sqlReader = command.ExecuteReader();
-
-                    while (sqlReader.Read())
-                    {
-                        string ProductName = sqlReader["ProductName"].ToString();
-                        decimal UnitPrice = (decimal)sqlReader["UnitPrice"];
-
-
-                        var product = new Product()
-                        {
-                            ProductName = ProductName,
-                            UnitPrice = UnitPrice
-                        };
-                        products.Add(product);
-                    }
+                    return count;
                 }
             }
-
-            return products[0].UnitPrice;
         }
         public int DiscontinuedCount(bool IsDiscontinued)
         {
@@ -184,7 +185,7 @@ namespace GroupProject01
                 {
                     SqlParameter param1 = new SqlParameter();
                     param1.ParameterName = "@container";
-                    param1.Value = "%"+container+"%";
+                    param1.Value = "%" + container + "%";
                     command.Parameters.Add(param1);
                     Int32 count = (Int32)command.ExecuteScalar();
 
@@ -212,12 +213,6 @@ namespace GroupProject01
                 }
             }
         }
-
-
-    }
-
-    public class CustomerTesting4
-    {
         public int CustomersInGivenCountry(string Country)
         {
             string inputCountry = Country;
@@ -234,7 +229,7 @@ namespace GroupProject01
                     param1.ParameterName = "@inputCountry";
                     param1.Value = "%" + inputCountry + "%";
                     command.Parameters.Add(param1);
-               
+
                     Int32 count = (Int32)command.ExecuteScalar();
 
                     return count;
@@ -243,9 +238,6 @@ namespace GroupProject01
                 }
             }
         }
-    }
-    public class CustomerTesting5
-    {
         public int FreightOver100(double freight)
         {
 
@@ -280,11 +272,8 @@ namespace GroupProject01
                 }
             }
         }
-    }
-    public class CustomerTesting6
-    {
         public int CustomersInPostCodeArea(string City)
-        {            
+        {
             string inputCity = City;
 
             string cityRequest = "select count(*) from customers where city = @" + inputCity + ";";
@@ -304,8 +293,9 @@ namespace GroupProject01
 
                     return count;
 
-
-
+                }
+            }
+        }
         public int WithStockGreaterThan(int amountOfStock)
         {
             string countRequest = "select count(UnitsInStock) from products where unitsinstock >@stock";
@@ -345,8 +335,211 @@ namespace GroupProject01
                 }
             }
         }
+        public int EmployeesWithMostCustomer()
+        {
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+                var SqlQuery = "SELECT TOP 1 EMPLOYEEID, COUNT(CustomerID) as custCount" +
+                    " FROM Orders" +
+                    " GROUP BY EmployeeID" +
+                    " ORDER BY custCount DESC";
+
+                using (var command = new SqlCommand(SqlQuery, connection))
+                {
+                    var sqlReader = command.ExecuteReader();
+                    while (sqlReader.Read())
+                    {
+                        string EmployeeID = sqlReader["EmployeeID"].ToString();
+
+                        var Order = new Order()
+                        {
+                            EmployeeID = int.Parse(EmployeeID)
+                        };
+
+                        OrderList.Add(Order);
+                    }
+                    return OrderList[0].EmployeeID;
+                }
+            }
+        }
+        public int FreightAmountGreaterThan100()        {
+
+            OrderList.Clear();
+
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+                var SqlQuery = "SELECT ShipCountry, SUM(Freight)" +
+                                 " FROM Orders" +
+                                 " GROUP BY ShipCountry" +
+                                 " HAVING SUM(Freight) > 1000";
+
+                using (var command = new SqlCommand(SqlQuery, connection))
+                {
+                    var sqlReader = command.ExecuteReader();
+
+                    while (sqlReader.Read())
+                    {
+                        string ShipCountry = sqlReader["ShipCountry"].ToString();
+
+                        var Order = new Order()
+                        {
+                            ShipCountry = ShipCountry
+                        };
+
+                        OrderList.Add(Order);
+                    }
+                    return OrderList.Count;
+                }
+            }
+
+        }
+        public int NumeberOfOrdersBySpecifiedCountry(string country)
+        {
+            OrderList.Clear();
+            string inputCountry = country;
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+
+                var SqlQuery = "SELECT COUNT(OrderID)"
+                                + " FROM ORDERS"
+                                + " WHERE ShipCountry = @" + country
+                                + " GROUP BY ShipCountry";
+
+                using (var command = new SqlCommand(SqlQuery, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@" + country;
+                    param1.Value = inputCountry;
+                    command.Parameters.Add(param1);
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+
+                }
+            }
+        }
+        public int NumberOfOrdersWithNoShipRegion()
+        {
+            OrderList.Clear();
+
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+
+                var SqlQuery = "SELECT OrderID, ShipRegion FROM ORDERS"
+                                + " WHERE ShipRegion is NULL";
+
+                using (var command = new SqlCommand(SqlQuery, connection))
+                {
+                    var sqlReader = command.ExecuteReader();
+
+
+                    while (sqlReader.Read())
+                    {
+                        int OrderID = Convert.ToInt32(sqlReader["OrderID"]);
+
+                        var Order = new Order()
+                        {
+                            OrderID = OrderID
+                        };
+
+                        OrderList.Add(Order);
+                    }
+
+                    return OrderList.Count;
+                }
+            }
+        }
+        public int EmployeeWithMostOrders()
+        {
+            OrderList.Clear();
+
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+
+                var SqlQuery = "SELECT TOP 1 EmployeeID, COUNT(OrderID) FROM Orders" +
+                                 " GROUP BY EmployeeID" +
+                                    " ORDER BY COUNT(OrderID) DESC";
+
+
+                using (var command = new SqlCommand(SqlQuery, connection))
+                {
+                    var sqlReader = command.ExecuteReader();
+
+                    while (sqlReader.Read())
+                    {
+                        int EmployeeID = Convert.ToInt32(sqlReader["EmployeeID"]);
+
+                        var Order = new Order()
+                        {
+                            EmployeeID = EmployeeID
+                        };
+
+                        OrderList.Add(Order);
+                    }
+
+                    return OrderList[0].EmployeeID;
+                }
+            }
+        }
+        public int NumberOfCustomerIDsWithTheSameShipName(string shipname)
+        {
+            OrderList.Clear();
+            string inputShipName = shipname;
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+
+                var SqlQuery = "SELECT COUNT(CustomerID), ShipName"
+                                + " FROM ORDERS"
+                                + " GROUP BY ShipName" +
+                                " HAVING ShipName LIKE @shipname";
+
+                using (var command = new SqlCommand(SqlQuery, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@shipname";
+                    param1.Value = "%" + inputShipName + "%";
+                    command.Parameters.Add(param1);
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+
+                }
+            }
+
+        }
+        public int NumberOfOrderIDWithTheSameDate(string date)
+        {
+            OrderList.Clear();
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\mssqllocaldb; Initial Catalog = Northwind"))
+            {
+                connection.Open();
+
+                var sqlQuery = "SELECT COUNT(OrderID) FROM Orders" +
+                                " GROUP BY OrderDate" +
+                                " HAVING OrderDate = @date";
+
+
+                using (var command = new SqlCommand(sqlQuery, connection))
+                {
+                    SqlParameter sqlParameter = new SqlParameter();
+                    sqlParameter.ParameterName = "@date";
+                    sqlParameter.Value = date;
+                    command.Parameters.Add(sqlParameter);
+                    var count = Convert.ToInt32(command.ExecuteScalar());
+                    return count;
+                }
+
+            }
+        }
+
     }
-
-    }   
-
 }
+
+
+
