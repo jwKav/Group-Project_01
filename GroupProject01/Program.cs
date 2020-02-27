@@ -8,11 +8,30 @@ namespace GroupProject01
     class Program
     {
         static void Main(string[] args)
-
         {
-         
-            
+            String City = "London";
+            string inputCity = City;
 
+            string cityRequest = "select count(*) from customers where city = @" + inputCity + ";";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(cityRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@" + City;
+                    param1.Value = inputCity;
+                    command.Parameters.Add(param1);
+
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    Console.WriteLine(count);
+
+
+                }
+            }
         }     
     }
     public class CustomerTesting
@@ -125,6 +144,100 @@ namespace GroupProject01
                     Int32 count = (Int32)command.ExecuteScalar();
 
                     return count;
+                }
+            }
+        }
+    }
+
+    public class CustomerTesting4
+    {
+        public int CustomersInGivenCountry(string Country)
+        {
+            string inputCountry = Country;
+
+            string countryRequest = "select count(*) from customers where country like @inputCountry";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(countryRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@inputCountry";
+                    param1.Value = "%" + inputCountry + "%";
+                    command.Parameters.Add(param1);
+               
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+
+
+                }
+            }
+        }
+    }
+    public class CustomerTesting5
+    {
+        public int FreightOver100(double freight)
+        {
+
+            double inputFreight = freight;
+
+            string FreightRequest = "select count(*)" +
+                "from customers " +
+                "join orders " +
+                "on customers.CustomerId = orders.CustomerId " +
+                "where orders.Freight >  @" + inputFreight + ";";
+
+
+
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(FreightRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@" + inputFreight;
+                    param1.Value = inputFreight;
+                    command.Parameters.Add(param1);
+
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+
+
+
+                }
+            }
+        }
+    }
+    public class CustomerTesting6
+    {
+        public int CustomersInPostCodeArea(string City)
+        {            
+            string inputCity = City;
+
+            string cityRequest = "select count(*) from customers where city = @" + inputCity + ";";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(cityRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@" + City;
+                    param1.Value = inputCity;
+                    command.Parameters.Add(param1);
+
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+
+
                 }
             }
         }

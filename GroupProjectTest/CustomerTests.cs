@@ -45,14 +45,45 @@ namespace GroupProjectTests
             var instance = new CustomerTesting3();
 
             var actual = instance.CustomersInGivenCity(city);
+        }
 
         [TestCase("SAVEA")]
-        public void Test2CustomerWithMostOrders(string expected)
+        public void Test4CustomerWithMostOrders(string expected)
         {
             var instance = new CustomerTesting();
 
             var actual = instance.TopOrdersFromCustomers();
 
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestCase("Germany", 11)]
+        public void Test4GivenCountry(string country, int expected)
+        {
+            var instance = new CustomerTesting4();
+
+            var actual = instance.CustomersInGivenCountry(country);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestCase(100, 187)]
+        public void Test5FreightOver100(double freight, int expected)
+        {
+            var instance = new CustomerTesting5();
+
+            var actual = instance.FreightOver100(freight);
+
+            Assert.AreEqual(expected, actual);
+        }
+
+        [TestCase("London", 6)]
+        public void Test6PostCodeArea(string country, int expected)
+        {
+            var instance = new CustomerTesting6();
+
+            var actual = instance.CustomersInPostCodeArea(country);
 
             Assert.AreEqual(expected, actual);
         }
