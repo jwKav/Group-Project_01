@@ -10,7 +10,7 @@ namespace GroupProject01
     {
         static void Main(string[] args)
         {
-
+            //Console.WriteLine(ProductTesting.WithStockGreaterThan(0));
         }
     }
     public class ProductTesting
@@ -88,6 +88,62 @@ namespace GroupProject01
                 }
             }
         }
+        public int ProductsPerSupplier(int supplierId)
+        {
+            string countRequest = "select count(productid) from products group by supplierid having supplierid like @supplier";
+
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                connection.Open();
+                using (var command = new SqlCommand(countRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@supplier";
+                    param1.Value = supplierId;
+                    command.Parameters.Add(param1);
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+                }
+            }
+        }
+        public int WithStockGreaterThan(int amountOfStock)
+        {
+            string countRequest = "select count(UnitsInStock) from products where unitsinstock >@stock";
+
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                connection.Open();
+                using (var command = new SqlCommand(countRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@stock";
+                    param1.Value = amountOfStock;
+                    command.Parameters.Add(param1);
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+                }
+            }
+        }
+        public int ProductsBeginWith(char firstLetter)
+        {
+            string countRequest = "select count(productid) from products where ProductName like @firstLetter";
+
+            using (var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;Integrated Security=True;Connect Timeout=30;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False"))
+            {
+                connection.Open();
+                using (var command = new SqlCommand(countRequest, connection))
+                {
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@firstLetter";
+                    param1.Value = firstLetter + "%";
+                    command.Parameters.Add(param1);
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+                }
+            }
+        }
     }
-    
 }

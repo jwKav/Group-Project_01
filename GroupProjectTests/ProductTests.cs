@@ -40,5 +40,35 @@ namespace GroupProjectTests
 
             Assert.AreEqual(expected, actual);
         }
+        [TestCase(2, 4)]
+        [TestCase(4, 3)]
+        public void ProductsPerSupplier(int supplierId, int expected)
+        {
+            var instance01 = new ProductTesting();
+
+            var actual = instance01.ProductsPerSupplier(supplierId);
+
+            Assert.AreEqual(expected, actual);
+        }
+        [TestCase(0, 72)]
+        [TestCase(20, 48)]
+        public void ProductsStock(int stockGreaterThan, int expected)
+        {
+            var instance01 = new ProductTesting();
+
+            var actual = instance01.WithStockGreaterThan(stockGreaterThan);
+
+            Assert.AreEqual(expected, actual);
+        }
+        [TestCase('c', 9)]
+        [TestCase('b', 1)]
+        public void ProductsBeginWithChar(char letter, int expected)
+        {
+            var instance01 = new ProductTesting();
+
+            var actual = instance01.ProductsBeginWith(letter);
+
+            Assert.AreEqual(expected, actual);
+        }
     }
 }
