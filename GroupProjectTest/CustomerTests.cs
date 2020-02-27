@@ -24,14 +24,14 @@ namespace GroupProjectTests
             Assert.AreEqual(expected, actual);
         }
 
-        [Test]
-        public void Test2Fax(int Fax)
+        [TestCase(69)]
+        public void Test2Fax(int expected)
         {
             var instance = new CustomerTesting2();
 
-            var actual = instance.HasCustomerGotFax(Fax);
+            var actual = instance.HasCustomerGotFax();
 
-            Assert.AreEqual(69, actual);
+            Assert.AreEqual(expected, actual);
         }
     }
 }

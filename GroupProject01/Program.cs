@@ -51,9 +51,9 @@ namespace GroupProject01
 
     public class CustomerTesting2
     {
-        public int HasCustomerGotFax(int Fax)
+        public int HasCustomerGotFax()
         {
-            int inputFax = Fax;
+            
             string faxRequest = "select count(*) from customers where fax is not null;";
             var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
 
