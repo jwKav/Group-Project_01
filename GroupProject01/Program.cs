@@ -7,34 +7,13 @@ namespace GroupProject01
 {
     class Program
     {
-       
         static void Main(string[] args)
-        {            
-            string Request = "select c.CustomerID as CustomerIDS, c.ContactName as CustomerNames, count(o.CustomerID) as TotalOrders" +
-                " from Customers c join Orders o on o.CustomerID = c.CustomerID" +
-                " group by c.CustomerID, c.ContactName " +
-                "order by TotalOrders desc";
 
-            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+        {
+         
+            
 
-            using (connection)
-            {
-                connection.Open();
-                using (var command = new SqlCommand(Request, connection))
-                {
-
-
-                    var reader = command.ExecuteScalar();
-
-                   
-                        Console.WriteLine(reader);
-                    
-                   
-                }
-            }
         }     
-
-        
     }
     public class CustomerTesting
     {
@@ -98,7 +77,56 @@ namespace GroupProject01
             }
         }
     }
+
+    public class CustomerTesting2
+    {
+        public int HasCustomerGotFax()
+        {
+            
+            string faxRequest = "select count(*) from customers where fax is not null;";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(faxRequest, connection))
+                {
+
+                    Int32 result = (Int32)command.ExecuteScalar();
+
+                    return result;
+
+                }
+            }
+        }    
+    }
+
+    public class CustomerTesting3
+    {
+        public int CustomersInGivenCity(string City)
+        {
+            string inputCity = City;
+
+            string cityRequest = "select count(*) from customers where city like @inputCity";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(cityRequest, connection))
+                {
+
+
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@inputCity";
+                    param1.Value = "%" + inputCity + "%";
+                    command.Parameters.Add(param1);
+
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+                }
+            }
+        }
+    }
 }
-
-
-
