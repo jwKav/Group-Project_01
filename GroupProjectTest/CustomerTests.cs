@@ -30,7 +30,7 @@ namespace GroupProjectTests
         [TestCase(69)]
         public void Test2Fax(int expected)
         {
-            var instance = new CustomerTesting2();
+            var instance = new CustomerTesting();
 
             var actual = instance.HasCustomerGotFax();
 
@@ -42,7 +42,7 @@ namespace GroupProjectTests
         [TestCase("Sao Paulo", 4)]
         public void Test3GivenCity(string city, int expected)
         {
-            var instance = new CustomerTesting3();
+            var instance = new CustomerTesting();
 
             var actual = instance.CustomersInGivenCity(city);
 
@@ -50,7 +50,7 @@ namespace GroupProjectTests
         }
 
         [TestCase("SAVEA")]
-        public void Test2CustomerWithMostOrders(string expected)
+        public void Test4CustomerWithMostOrders(string expected)
         {
             var instance = new CustomerTesting();
 
