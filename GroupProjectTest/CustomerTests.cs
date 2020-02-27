@@ -46,6 +46,9 @@ namespace GroupProjectTests
 
             var actual = instance.CustomersInGivenCity(city);
 
+            Assert.AreEqual(expected, actual);
+        }
+
         [TestCase("SAVEA")]
         public void Test2CustomerWithMostOrders(string expected)
         {
