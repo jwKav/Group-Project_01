@@ -7,13 +7,10 @@ namespace GroupProject01
 {
     class Program
     {
-       
         static void Main(string[] args)
         {
-            
+           
         }     
-
-        
     }
     public class CustomerTesting
     {
@@ -70,5 +67,34 @@ namespace GroupProject01
                 }
             }
         }    
+    }
+
+    public class CustomerTesting3
+    {
+        public int CustomersInGivenCity(string City)
+        {
+            string inputCity = City;
+
+            string cityRequest = "select count(*) from customers where city like @inputCity";
+            var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
+
+            using (connection)
+            {
+                connection.Open();
+                using (var command = new SqlCommand(cityRequest, connection))
+                {
+
+
+                    SqlParameter param1 = new SqlParameter();
+                    param1.ParameterName = "@inputCity";
+                    param1.Value = "%" + inputCity + "%";
+                    command.Parameters.Add(param1);
+
+                    Int32 count = (Int32)command.ExecuteScalar();
+
+                    return count;
+                }
+            }
+        }
     }
 }
