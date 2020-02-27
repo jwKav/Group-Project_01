@@ -95,13 +95,9 @@ namespace GroupProject01
                 }
             }
         }
-    }
-
-    public class CustomerTesting2
-    {
         public int HasCustomerGotFax()
         {
-            
+
             string faxRequest = "select count(*) from customers where fax is not null;";
             var connection = new SqlConnection(@"Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=Northwind;");
 
@@ -117,11 +113,7 @@ namespace GroupProject01
 
                 }
             }
-        }    
-    }
-
-    public class CustomerTesting3
-    {
+        }
         public int CustomersInGivenCity(string City)
         {
             string inputCity = City;
@@ -147,6 +139,7 @@ namespace GroupProject01
                 }
             }
         }
+
     }
 
     public class CustomerTesting4
@@ -242,4 +235,7 @@ namespace GroupProject01
             }
         }
     }
+
+    }   
+
 }
